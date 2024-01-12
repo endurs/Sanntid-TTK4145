@@ -5,12 +5,17 @@
 #include <stdio.h>
 
 int i = 0;
+//add mutex to protect i
+pthread_mutex_t ilock;
 
 // Note the return type: void*
 void* incrementingThreadFunction(){
     // TODO: increment i 1_000_000 times
-    for (int j = 0; j < 1000000; j++){
+    for (int j = 0; j < 1000069; j++){
+        //ilock mutex
+        pthread_mutex_lock(&ilock);
         i++;
+        pthread_mutex_unlock(&ilock);
     }
     return NULL;
 }
@@ -18,28 +23,33 @@ void* incrementingThreadFunction(){
 void* decrementingThreadFunction(){
     // TODO: decrement i 1_000_000 times
     for (int j = 0; j < 1000000; j++){
+        pthread_mutex_lock(&ilock);
         i--;
+        pthread_mutex_unlock(&ilock);
     }
     return NULL;
 }
 
 
 int main(){
-    // TODO: 
-    // start the two functions as their own threads using `pthread_create`
-    // Hint: search the web! Maybe try "pthread_create example"?
+    //init mutex
+    pthread_mutex_init(&ilock, NULL);
+
     pthread_t incrementingThread, decrementingThread;
     pthread_create(&incrementingThread, NULL, incrementingThreadFunction, NULL);
     pthread_create(&decrementingThread, NULL, decrementingThreadFunction, NULL);
     
-    // TODO:
-    // wait for the two threads to be done before printing the final result
-    // Hint: Use `pthread_join`    
 
     pthread_join(incrementingThread, NULL);
     pthread_join(decrementingThread, NULL);
 
+    //kill mutex because thats apparently good practice
+    pthread_mutex_destroy(&ilock);
+
     
     printf("The magic number is: %d\n", i);
+    if(i == 69){
+        printf("Nice\n");
+    }
     return 0;
 }
