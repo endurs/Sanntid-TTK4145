@@ -1,0 +1,1 @@
+/usr/bin/gcc -g -rdynamic CMakeFiles/foo.dir/foo.c.o -o foo 
