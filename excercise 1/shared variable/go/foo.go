@@ -5,37 +5,75 @@ package main
 import (
 	. "fmt"
 	"runtime"
-	"time"
+	"sync"
+	//"time"
 )
 
 var i = 0
+var wg sync.WaitGroup //waitgroup to handle stopping the program
 
-func incrementing() {
-	//TODO: increment i 1000000 times
-	for j := 0; j < 1000000; j++ {
-		i++
+func handleIncDec(inc chan bool, dec chan bool) {
+	defer wg.Done()
+	for {
+		select {
+		case _, ok := <-inc:
+			if ok {
+				i++
+				//Printf("i is now %d\n", i)
+			} else {
+				inc = nil
+			}
+		case _, ok := <-dec:
+			if ok {
+				i--
+				//Printf("i is now %d\n", i)
+			} else {
+				dec = nil
+			}
+		}
+		if inc == nil && dec == nil {
+			break
+		}
 	}
+
 }
 
-func decrementing() {
-	//TODO: decrement i 1000000 times
-	for j := 0; j < 1000000; j++ {
-		i--
+// function to increment i 1000000 times, add to channel
+func incrementing(c chan bool) {
+	for j := 0; j < 1000069; j++ {
+		c <- true
 	}
+	//close channel
+	close(c)
+}
 
+// function to decrement i 1000000 times, add to channel
+func decrementing(c chan bool) {
+	for j := 0; j < 1000000; j++ {
+		c <- true
+	}
+	//close channel
+	close(c)
 }
 
 func main() {
 	// What does GOMAXPROCS do? What happens if you set it to 1?
 	//// running at most just one process at a time will remove the race condition and the result will always be 0
-	runtime.GOMAXPROCS(2)
+	runtime.GOMAXPROCS(3)
 
-	// TODO: Spawn both functions as goroutines
-	go incrementing()
-	go decrementing()
+	//create an add channel and a subtract channel
+	inc := make(chan bool)
+	dec := make(chan bool)
 
-	// We have no direct way to wait for the completion of a goroutine (without additional synchronization of some sort)
-	// We will do it properly with channels soon. For now: Sleep.
-	time.Sleep(500 * time.Millisecond)
+	//spawn the goroutines
+	wg.Add(1)
+	go incrementing(inc)
+	go decrementing(dec)
+	go handleIncDec(inc, dec)
+
+	wg.Wait()
 	Println("The magic number is:", i)
+	if i == 69 {
+		Println("Nice")
+	}
 }
