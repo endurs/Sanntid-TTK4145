@@ -5,26 +5,38 @@
 #include <stdio.h>
 
 int i = 0;
-//add mutex to protect i
 pthread_mutex_t ilock;
 
-// Note the return type: void*
 void* incrementingThreadFunction(){
-    // TODO: increment i 1_000_000 times
-    for (int j = 0; j < 1000069; j++){
+    for (int j = 0; j < 169; j++){
         //ilock mutex
         pthread_mutex_lock(&ilock);
         i++;
+        printf("i: %d\n", i);
         pthread_mutex_unlock(&ilock);
+
+        //waste time calculating pi 100000 times
+        double pi = 0;
+        for (int k = 0; k < 1000; k++){
+            pi += 4.0 * (1 - (k % 2) * 2) / (2 * k + 1);
+        }
+        
     }
     return NULL;
 }
 
 void* decrementingThreadFunction(){
-    // TODO: decrement i 1_000_000 times
-    for (int j = 0; j < 1000000; j++){
+    for (int j = 0; j < 100; j++){
         pthread_mutex_lock(&ilock);
         i--;
+        printf("i: %d\n", i);
+        pthread_mutex_unlock(&ilock);
+
+        //waste time calculating pi 100000 times
+        double pi = 0;
+        for (int k = 0; k < 1000; k++){
+            pi += 4.0 * (1 - (k % 2) * 2) / (2 * k + 1);
+        }
         pthread_mutex_unlock(&ilock);
     }
     return NULL;

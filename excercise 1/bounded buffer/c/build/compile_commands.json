@@ -1,0 +1,12 @@
+[
+{
+  "directory": "/home/endurs/dev/sanntid/Sanntid-TTK4145/excercise 1/bounded buffer/c/build",
+  "command": "/usr/bin/gcc   -g -o CMakeFiles/main.dir/main.c.o -c \"/home/endurs/dev/sanntid/Sanntid-TTK4145/excercise 1/bounded buffer/c/main.c\"",
+  "file": "/home/endurs/dev/sanntid/Sanntid-TTK4145/excercise 1/bounded buffer/c/main.c"
+},
+{
+  "directory": "/home/endurs/dev/sanntid/Sanntid-TTK4145/excercise 1/bounded buffer/c/build",
+  "command": "/usr/bin/gcc   -g -o CMakeFiles/main.dir/ringbuf.c.o -c \"/home/endurs/dev/sanntid/Sanntid-TTK4145/excercise 1/bounded buffer/c/ringbuf.c\"",
+  "file": "/home/endurs/dev/sanntid/Sanntid-TTK4145/excercise 1/bounded buffer/c/ringbuf.c"
+}
+]
